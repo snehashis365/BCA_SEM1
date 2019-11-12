@@ -58,45 +58,30 @@ void main()
 
 Output :
 
-Enter no. of rows: 3
-Enter no. of columns: 4
+Enter no. of rows: 2
+Enter no. of columns: 3
 Enter elements for 1st matrix:
-11
-22
-33
-44
-55
-66
-77
-88
-99
-25
-46
-79
-Entered Matrix:
-11 22 33 44
-55 66 77 88
-99 25 46 79
+1
+2
+3
+4
+5
+6
+Entered Matrix: 
+1 2 3 
+4 5 6 
 Enter elements for 2nd matrix:
-19
-18
-17
-26
-35
-24
-13
-10
+5
+4
+3
+2
+1
 0
-15
-34
-11
-Entered Matrix:
-19 18 17 26
-35 24 13 10
-0 15 34 11
+Entered Matrix: 
+5 4 3 
+2 1 0 
 Result of addition:
-30 40 50 70
-90 90 90 98
-99 40 80 90
+6 6 6 
+6 6 6 
 
 */
