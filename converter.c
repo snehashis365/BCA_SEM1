@@ -1,3 +1,4 @@
+//Program 49: Menu Driven program to conver decimal to binary,octal or hexadecimal
 #include <stdio.h>
 void convert(int dec,int base)
 {
@@ -8,7 +9,7 @@ void convert(int dec,int base)
 		convert(dec/base,base);
 		if(rem<10)
 		{
-			
+
 		//result=rem*pow(10,p++);
 			printf("%d",rem);
 		}
@@ -16,10 +17,10 @@ void convert(int dec,int base)
 			int ch=rem+55;
 			printf("%c",ch);
 		}
-		
-		
+
+
 	}
-	
+
 }
 
 
@@ -64,5 +65,35 @@ void main()
 	printf("\n");
 	}while(1);
 }
+/*
 
-	
+Ouput:
+
+Press 1 for Decimal to Binary
+Press 2 for Decimal to Octal
+Press 3 for Decimal to Hexadecimal
+Press 0 to Exit
+Enrter Choice:1
+Enter number:25
+11001
+Press 1 for Decimal to Binary
+Press 2 for Decimal to Octal
+Press 3 for Decimal to Hexadecimal
+Press 0 to Exit
+Enrter Choice:2
+Enter number:94
+136
+Press 1 for Decimal to Binary
+Press 2 for Decimal to Octal
+Press 3 for Decimal to Hexadecimal
+Press 0 to Exit
+Enrter Choice:3
+Enter number:124
+7C
+Press 1 for Decimal to Binary
+Press 2 for Decimal to Octal
+Press 3 for Decimal to Hexadecimal
+Press 0 to Exit
+Enrter Choice:0
+
+*/
