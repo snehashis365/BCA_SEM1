@@ -1,4 +1,4 @@
-//Program 55: Transpose of a matrix
+//Program 56: Addition of elements of 2 matrix
 #include <stdio.h>
 void main()
 {
