@@ -3,7 +3,7 @@
 int *sort(int arr[],int l)
 {
   int i,j,temp,flag;
-  for(i=0;i<l;i++)
+  for(i=0;i<l-1;i++)
   {
     flag=0;
     for(j=0;j<l-i-1;j++)
