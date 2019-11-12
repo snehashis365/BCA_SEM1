@@ -25,7 +25,7 @@ int search(int arr[],int l,int key)
 }
 void main()
 {
-	int n,i,j,sk;
+	int n,i,sk;
 	printf("Enter length: ");
 	scanf("%d",&n);
 	int a[n];
