@@ -8,19 +8,19 @@ typedef struct customer{
 	long int acc_number;
 }customer;
 char reset[1];//using this to reset the trailing new line left by scanf
+void viewBalance(customer this)
+{
+	printf("Balance: %f\n\n",this.balance);
+}
 long int acc_num=1000100010001000;
 void display(customer this)
 {
-	printf("Account Details:\nAccount Holder Name: ");
+	printf("\nAccount Details:\n\nAccount Holder Name: ");
 	puts(this.name);
 	printf("Account Number: %ld\n",this.acc_number);
 	printf("Account Type: ");
 	puts(this.acc_type);
-	printf("Balance: %f\n",this.balance);
-}
-void viewBalance(customer this)
-{
-	printf("Balance: %f\n",this.balance);
+	viewBalance(this);
 }
 float deposit(customer this)
 {
@@ -29,15 +29,19 @@ float deposit(customer this)
 	do
 	{
 		flag=0;
-		printf("Enter Amount: ");
+		printf("Enter Amount (Enter -1 to cancel) :");
 		scanf("%f",&d);
-		if(d+this.balance<3000)
+		if(d+this.balance<3000 && d!=-1)
 		{
-			printf("Minimum Balance should be 3000\nTransaction declined plz re-enter\n");
+			printf("Minimum Balance should be 3000\nTransaction declined plz re-enter\n\n");
 			flag=1;
 		}
 	}while(flag==1);
-	return this.balance+d;
+	this.balance+=d;
+	if(d!=-1)
+		printf("Transaction Sucessful\nUpdated ");
+	viewBalance(this);
+	return d;
 }
 float withdraw(customer this)
 {
@@ -47,15 +51,14 @@ float withdraw(customer this)
 	if(this.balance-w<3000)
 	{
 		printf("Minimum account balance should be 3000\nTransaction Declined\n");
-		return this.balance;
 	}
 	else
 	{
 		this.balance-=w;
 		printf("Transaction Sucessful\nRemaining ");
 		viewBalance(this);
-		return this.balance;
 	}
+	return w;
 }
 
 
@@ -70,7 +73,7 @@ customer newAccount()
 	do
 	{
 		f=0;
-		printf("Select Account type:\nPress 1 for Savings\nPress 2 for current\nEnter Choice: ");
+		printf("\nSelect Account type:\nPress 1 for Savings\nPress 2 for current\nEnter Choice: ");
 		int ch;
 		scanf(" %d",&ch);
 		switch(ch)
@@ -95,23 +98,23 @@ customer newAccount()
 	}while(f==1);
 	printf("Deposit amount (Minimum 3000)\n");
 	new.balance=0.0;
-	new.balance=deposit(new);
+	new.balance+=deposit(new);
 	new.acc_number=acc_num;
 	acc_num+=25;
-	printf("Account Number Generated Sucessfully!!\n");
+	printf("---------------------------------------\n Account Number Generated Sucessfully!!\n---------------------------------------\n");
 	display(new);
 	return new;
 }
 int search(long int acc,char name[],customer list[],int l)
 {
 	int i;
-	if (acc<1000100010001000)
+	if (acc!=0)
 	{
 		for(i=0;i<l;i++)
 		{
 			if(list[i].acc_number==acc)
 			{
-				printf("Account found ");
+				printf("Account found\n");
 				return i;
 			}
 			else
@@ -129,16 +132,31 @@ int search(long int acc,char name[],customer list[],int l)
 			if(strcmp(name,list[i].name)==0)
 			{
 				count++;
+				printf("Name: ");
 				puts(list[i].name);
+				printf("Accont Type: ");
 				puts(list[i].acc_type);
 				printf("Accont number: %ld\n",list[i].acc_number);
 			}
 		}
-		if(count>0)
-		printf("Total matches: %d\n",count);
+		if(count==1)
+		{
+			printf("Found account!!\n");
+			return i;
+		}
+		else if(count>1)
+		{
+			printf("Total match found: %d\n",count);
+			printf("Please note down you account number and re-enter\n");
+			printf("Enter account number: \n");
+			scanf("%ld",&acc);
+			return search(acc,NULL,list,l);
+		}
 		else
-		printf("No Match found\n");
-		return -1;
+		{
+			printf("No Match found\n");
+			return -1;
+		}	
 	}
 	else
 	{
@@ -146,15 +164,15 @@ int search(long int acc,char name[],customer list[],int l)
 		return -999;
 	}
 }
-customer Banking(customer this)
+	customer Banking(customer this)
 {
 	int flag;
-	do {
+	do 
+	{
 		flag=0;
-
-		printf("Press 1 to view Balance\nPress 2 to withdraw\nPress 3 to deposit\nPress 4 to return to previous menu\nEnter choice: ");
+		printf("Press 1 to view Balance\nPress 2 to withdraw\nPress 3 to deposit\nPress 4 to return to previous menu\n\nEnter choice: ");
 		int choice;
-		scanf(choice);
+		scanf("%d",&choice);
 		switch(choice)
 		{
 			case 1 :
@@ -164,12 +182,12 @@ customer Banking(customer this)
 			}
 			case 2 :
 			{
-				this.balance=withdraw(this);
+				this.balance-=withdraw(this);
 				break;
 			}
 			case 3 :
 			{
-				this.balance=deposit(this);
+				this.balance+=deposit(this);
 				break;
 			}
 			case 4 :
@@ -189,56 +207,63 @@ customer Banking(customer this)
 void main()
 {
 	int n=0,i,flag;
-	customer *list;//=(customer*)malloc(n*sizeof(customer));
-	printf("Press 1 for new account\nPress 2 to search for account\nPress 3 to exit\n");
-	int ch1;
-	printf("Enter choice: ");
-	scanf("%d",&ch1);
+	customer list[30];//=(customer*)malloc(n*sizeof(customer));
 	do {
+
+		printf("Press 1 for new account\nPress 2 to search and select account\n\nPress 0 to exit\n\n");
+		int ch1;
+		printf("Enter choice: ");
+		scanf("%d",&ch1);
 		flag=0;
 		switch(ch1)
 		{
 			case 1 :
 			{
-				list=(customer*)malloc(sizeof(customer));
+				//list=(customer*)malloc(sizeof(customer));
 				list[n]=newAccount();
 				n++;
 				break;
 			}
 			case 2 :
 			{
-				printf("Enter account number if you hace forgot account number enter -1 to search for your account by name\n" );
 				long int acn;
-				scanf("%ld",&acn);
-				if(acn>0)
+				do
 				{
-					int incdex=(int)search(acn,NULL,list,n);
-					if(index>0)
+					printf("Enter account number (if you have forgot account number enter 0 to search for your account by name)\n" );
+					scanf("%ld",&acn);
+					int index=-1;
+					if(acn>0)
 					{
-						customer temp=Banking(list[index]);
-						list[index]=temp;
+						index=search(acn,NULL,list,n);
+						
+					}
+					else if(acn==0)
+					{
+						printf("Enter Name: ");
+						char sk[20];
+						gets(reset);
+						gets(sk);
+						index=search(0,sk,list,n);
 					}
 					else
 					{
-						printf("Account not found\n");
+						printf("Please try again\n\n");
 					}
-				}
-				else if(index!=-999)
-				{
-					printf("Enter Name: ");
-					char sk[20];
-					gets(reset);
-					gets(sk);
-					int index=search(NULL,sk,list,n);
-					printf("Please note down you account number and re-enter");
-				}
-				else
-				{
-					printf("Please try again\n");
-				}
+					if(index!=-1)
+					{
+						customer temp=Banking(list[index]);
+						list[index]=temp;
+						break;
+					}
+					else
+					{
+						printf("Account not found\n\n");
+						break;
+					}
+				}while(1);
 				break;
 			}
-			case 3 :
+			case 0 :
 			{
 				flag=1;
 				break;
