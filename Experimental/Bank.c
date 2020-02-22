@@ -1,11 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+typedef struct transaction
+{
+	char type[10];
+	int amount;
+	int balance;
+}stmnt;
+typedef int pass;
 typedef struct customer{
 	char name[20];
 	char acc_type[10];
 	float balance;
 	long int acc_number;
+	pass PIN;
+	stmnt statement[10];
 }customer;
 char reset[1];//using this to reset the trailing new line left by scanf
 void viewBalance(customer this)
@@ -29,35 +38,39 @@ float deposit(customer this)
 	do
 	{
 		flag=0;
-		printf("Enter Amount (Enter -1 to cancel) :");
+		printf("Enter Amount (Enter 0 to cancel) :");
 		scanf("%f",&d);
-		if(d+this.balance<3000 && d!=-1)
+		if(d+this.balance<3000 && d!=0)
 		{
-			printf("Minimum Balance should be 3000\nTransaction declined plz re-enter\n\n");
+			printf("Minimum Balance should be 3000\n\nTransaction Declined\n\nPlease Re-Enter\n\n");
 			flag=1;
 		}
 	}while(flag==1);
 	this.balance+=d;
-	if(d!=-1)
+	if(d!=0)
 		printf("Transaction Sucessful\nUpdated ");
 	viewBalance(this);
 	return d;
 }
 float withdraw(customer this)
 {
-	printf("Enter Amount: ");
+	int flag;
 	float w;
-	scanf("%f",&w);
-	if(this.balance-w<3000)
+	do
 	{
-		printf("Minimum account balance should be 3000\nTransaction Declined\n");
-	}
-	else
-	{
-		this.balance-=w;
+		flag=0;
+		printf("Enter Amount: (Enter -1 to cancel) :");
+		scanf("%f",&w);
+		if(this.balance-w<3000 && w!=0)
+		{
+			printf("Minimum remaining balance should be 3000\n\nTransaction Declined\n\nPlease Re-Enter\n\n");
+			flag=1;
+		}
+	}while(flag==1);
+	this.balance-=w;
+	if(w!=0)
 		printf("Transaction Sucessful\nRemaining ");
-		viewBalance(this);
-	}
+	viewBalance(this);
 	return w;
 }
 
@@ -101,6 +114,20 @@ customer newAccount()
 	new.balance+=deposit(new);
 	new.acc_number=acc_num;
 	acc_num+=25;
+	do
+	{
+		printf("Create PIN: ");
+		pass newp,confirm;
+		scanf("%d",&newp);
+		printf("Re-Enter PIN: ");
+		scanf("%d",&confirm);
+		if(newp==confirm)
+		{
+			printf("PIN Generated\n");
+			new.PIN=newp;
+			break;
+		}
+	}while(1);
 	printf("---------------------------------------\n Account Number Generated Sucessfully!!\n---------------------------------------\n");
 	display(new);
 	return new;
@@ -164,44 +191,61 @@ int search(long int acc,char name[],customer list[],int l)
 		return -999;
 	}
 }
-	customer Banking(customer this)
+int authenticate(customer this)
 {
-	int flag;
-	do 
-	{
-		flag=0;
-		printf("Press 1 to view Balance\nPress 2 to withdraw\nPress 3 to deposit\nPress 4 to return to previous menu\n\nEnter choice: ");
-		int choice;
-		scanf("%d",&choice);
-		switch(choice)
+	pass in_pin;
+	printf("Enter PIN: \n");
+	scanf("%d",&in_pin);
+	int flag=in_pin==this.PIN?1:0;
+	return flag;
+
+}
+customer Banking(customer this)
+{
+	if(authenticate(this))
+	{	
+		printf("Acess Granted!\n");
+		int flag;
+		do 
 		{
-			case 1 :
+			flag=0;
+			printf("Press 1 to view Balance\nPress 2 to withdraw\nPress 3 to deposit\nPress 4 to return to previous menu\n\nEnter choice: ");
+			int choice;
+			scanf("%d",&choice);
+			switch(choice)
 			{
-				viewBalance(this);
-				break;
+				case 1 :
+				{
+					viewBalance(this);
+					break;
+				}
+				case 2 :
+				{
+					this.balance-=withdraw(this);
+					break;
+				}
+				case 3 :
+				{
+					this.balance+=deposit(this);
+					break;
+				}
+				case 4 :
+				{
+					flag = 1;
+					break;
+				}
+				default :
+				{
+					printf("Wrong Choice!\n");
+				}
 			}
-			case 2 :
-			{
-				this.balance-=withdraw(this);
-				break;
-			}
-			case 3 :
-			{
-				this.balance+=deposit(this);
-				break;
-			}
-			case 4 :
-			{
-				flag = 1;
-				break;
-			}
-			default :
-			{
-				printf("Wrong Choice!\n");
-			}
-		}
-	}while(flag!=1);
+		}while(flag!=1);
+	}
+	else
+		printf("Acess Denied!!!\n");
 	return this;
+
+
 }
 
 void main()
@@ -251,6 +295,7 @@ void main()
 					}
 					if(index!=-1)
 					{
+
 						customer temp=Banking(list[index]);
 						list[index]=temp;
 						break;
